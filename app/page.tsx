@@ -2,26 +2,34 @@
 
 import React, { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, Clock, MapPin, Book } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/components/language-provider"
 import Link from "next/link"
 
 const historicalEras = [
-  { id: 1, name: "Ancient Carthage", image: "/images/carthage.jpg" },
-  { id: 2, name: "Roman Tunisia", image: "/images/roman-tunisia.jpg" },
-  { id: 3, name: "Islamic Golden Age", image: "/images/islamic-tunisia.jpg" },
-  { id: 4, name: "Modern Tunisia", image: "/images/modern-tunisia.jpg" },
+  { id: 1, name: "explorer.era.Ancient Carthage", image: "/images/carthage.jpg" },
+  { id: 2, name: "explorer.era.Roman Tunisia", image: "/images/roman-tunisia.jpg" },
+  { id: 3, name: "explorer.era.Modern Tunisia", image: "/images/modern-tunisia.jpg" },
+  { id: 4, name: "Islamic Golden Age", image: "/images/islamic-tunisia.jpg" },
+
+]
+
+const features = [
+  { id: 1, icon: Clock, text: "Traverse 3000 years of history" },
+  { id: 2, icon: MapPin, text: "Explore iconic Tunisian landmarks" },
+  { id: 3, icon: Book, text: "Immerse in rich cultural narratives" },
 ]
 
 export default function Home() {
   const [currentEra, setCurrentEra] = useState(0)
+  const [currentFeature, setCurrentFeature] = useState(0)
   const { t } = useLanguage()
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentEra((prev) => (prev + 1) % historicalEras.length)
-    }, 5000) // Change era every 5 seconds
+      setCurrentFeature((prev) => (prev + 1) % features.length)
+    }, 3000) // Change feature every 3 seconds
 
     return () => clearInterval(interval)
   }, [])
@@ -37,13 +45,11 @@ export default function Home() {
       {/* Content */}
       <div className="relative container h-full flex flex-col items-center justify-center text-center text-white">
         <motion.h1
-          key={currentEra}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6"
+          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6"
         >
-          {historicalEras[currentEra].name}
+          Tunisian <span className="text-black">Time</span> Traveler
         </motion.h1>
         <motion.p
           key={`desc-${currentEra}`}
@@ -54,6 +60,28 @@ export default function Home() {
         >
           {t("exploreHistory")}
         </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.8 }}
+          className="mb-12"
+        >
+          {features.map((feature, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: index === currentFeature ? 1 : 0, x: index === currentFeature ? 0 : -20 }}
+              transition={{ duration: 0.5 }}
+              className={`flex items-center justify-center space-x-2 ${index === currentFeature ? "block" : "hidden"}`}
+            >
+              <feature.icon className="w-6 h-6 text-primary" />
+              <span className="text-lg">{t(`home.feature${feature.id}.text`)}</span>
+            </motion.div>
+          ))}
+        </motion.div>
+
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

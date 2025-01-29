@@ -13,16 +13,17 @@ interface Era {
 
 interface TimelineProps {
   eras: Era[]
-  onEraChange?: (eraId: number) => void
+  selectedEra: number
+  onEraChange: (eraId: number) => void
 }
 
-export function Timeline({ eras, onEraChange }: TimelineProps) {
-  const [selectedEra, setSelectedEra] = React.useState(0)
+export function Timeline({ eras, selectedEra, onEraChange }: TimelineProps) {
+  // Remove this line:
+  // const [selectedEra, setSelectedEra] = React.useState(0)
   const { t } = useLanguage()
 
   const handleEraChange = (value: number) => {
-    setSelectedEra(value)
-    onEraChange?.(value)
+    onEraChange(value)
   }
 
   return (

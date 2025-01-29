@@ -37,7 +37,7 @@ export default function FiguresPage() {
   return (
     <div className="page-background">
       <div className="container py-8 px-4">
-        <h1 className="text-4xl font-bold text-white mb-8">{t("figures.title")}</h1>
+        <h1 className="text-4xl text-center font-bold text-white mb-8">{t("figures.title")}</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {historicalFigures.map((figure) => (
@@ -49,15 +49,15 @@ export default function FiguresPage() {
               <div className="aspect-[3/4] relative">
                 <img
                   src={figure.image || "/placeholder.svg"}
-                  alt={figure.name}
+                  alt={t(`figures.name.${figure.id}`)}
                   className="absolute inset-0 h-full w-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                 <div className="absolute bottom-0 left-0 right-0 p-6 translate-y-4 group-hover:translate-y-0 transition-transform">
-                  <h3 className="text-2xl font-bold text-white mb-2">{figure.name}</h3>
-                  <p className="text-gray-200 mb-2">{figure.period}</p>
-                  <p className="text-gray-300 mb-4">{figure.description}</p>
+                  <h3 className="text-2xl font-bold text-white mb-2">{t(`figures.name.${figure.id}`)}</h3>
+                  <p className="text-gray-200 mb-2">{t(`figures.period.${figure.id}`)}</p>
+                  <p className="text-gray-300 mb-4">{t(`figures.description.${figure.id}`)}</p>
                   <Button
                     onClick={() => setSelectedFigure(figure)}
                     className="w-full bg-primary hover:bg-primary/90 text-white"

@@ -110,7 +110,7 @@ body {
 }
 
 .animate-gradient-x {
-  animation: gradient-x 15s ease infinite;
+  animation: gradient-x 10s ease infinite;
   background-size: 200% 200%;
 }
 

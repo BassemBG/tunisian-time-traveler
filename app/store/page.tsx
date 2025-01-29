@@ -8,29 +8,42 @@ import { useCart } from "@/contexts/CartContext"
 import { useLanguage } from "@/components/language-provider"
 import Link from "next/link"
 
-const products = [
-  {
-    id: 1,
-    name: "Virtual Tour: Ancient Carthage",
-    price: 29.99,
-    type: "digital",
-    image: "/images/carthage-tour.jpg",
-    description: "Experience the grandeur of ancient Carthage in VR",
-  },
-  {
-    id: 2,
-    name: "Historical Tunisia Book",
-    price: 49.99,
-    type: "physical",
-    image: "/images/tunisia-book.jpg",
-    description: "Comprehensive guide to Tunisia's rich history",
-  },
-  // Add more products
-]
+const productIds = [1, 2] // Add more product IDs as needed
+
+
+// const products = [
+//   {
+//     id: 1,
+//     name: "Virtual Tour: Ancient Carthage",
+//     price: 29.99,
+//     type: "digital",
+//     image: "/images/carthage-tour.jpg",
+//     description: "Experience the grandeur of ancient Carthage in VR",
+//   },
+//   {
+//     id: 2,
+//     name: "Historical Tunisia Book",
+//     price: 49.99,
+//     type: "physical",
+//     image: "/images/tunisia-book.jpg",
+//     description: "Comprehensive guide to Tunisia's rich history",
+//   },
+//   // Add more products
+// ]
 
 export default function StorePage() {
   const { cart, addToCart } = useCart()
   const { t } = useLanguage()
+
+
+  const products = productIds.map((id) => ({
+    id,
+    name: t(`store.product${id}.name`),
+    price: id === 1 ? 79.99 : 49.99, // Example prices, adjust as needed
+    type: id === 1 ? "digital" : "physical",
+    image: id === 1 ? "/images/carthage-tour.jpg" : "/images/tunisia-book.jpg",
+    description: t(`store.product${id}.description`),
+  }))
 
   return (
     <div className="page-background">
@@ -65,7 +78,7 @@ export default function StorePage() {
                 />
                 <div className="absolute top-2 right-2">
                   <span className="px-2 py-1 text-xs font-semibold rounded-full bg-primary text-white">
-                    {product.type}
+                    {t(`store.productType.${product.type}`)}
                   </span>
                 </div>
               </div>
@@ -73,7 +86,7 @@ export default function StorePage() {
                 <h3 className="text-xl font-bold text-white mb-2">{product.name}</h3>
                 <p className="text-gray-300 mb-4">{product.description}</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-primary">${product.price.toFixed(2)}</span>
+                  <span className="text-2xl font-bold text-primary">TND {product.price.toFixed(2)}</span>
                   <Button
                     className="bg-primary hover:bg-primary/90 text-white"
                     onClick={() => addToCart({ ...product, quantity: 1 })}

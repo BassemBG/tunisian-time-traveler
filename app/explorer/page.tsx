@@ -8,6 +8,10 @@ import { Button } from "@/components/ui/button"
 import { useLanguage } from "@/components/language-provider"
 import Image from "next/image"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import dynamic from "next/dynamic"
+import "leaflet/dist/leaflet.css"
+
+const MapComponent = dynamic(() => import("@/components/map-component"), { ssr: false })
 
 const historicalPeriods = [
   { id: 0, name: "Antiquity", year: -814 },
@@ -25,7 +29,7 @@ const historicalSites = [
   {
     id: 1,
     name: "Carthage",
-    coordinates: { x: 45, y: 25 },
+    coordinates: [36.8526, 10.3284],
     period: 0,
     category: "landmarks",
     description: "Ancient Phoenician and Roman city",
@@ -35,7 +39,7 @@ const historicalSites = [
   {
     id: 2,
     name: "Kairouan",
-    coordinates: { x: 55, y: 45 },
+    coordinates: [35.6781, 10.1005],
     period: 1,
     category: "landmarks",
     description: "Fourth holiest city of Islam",
@@ -45,7 +49,7 @@ const historicalSites = [
   {
     id: 3,
     name: "Medina of Tunis",
-    coordinates: { x: 40, y: 30 },
+    coordinates: [36.7992, 10.1706],
     period: 2,
     category: "landmarks",
     description: "Historic heart of Tunis",
@@ -55,7 +59,7 @@ const historicalSites = [
   {
     id: 4,
     name: "Punic Wars",
-    coordinates: { x: 35, y: 20 },
+    coordinates: [36.8526, 10.3284],
     period: 0,
     category: "events",
     description: "Series of wars between Rome and Carthage",
@@ -65,7 +69,7 @@ const historicalSites = [
   {
     id: 5,
     name: "Arab Conquest",
-    coordinates: { x: 50, y: 40 },
+    coordinates: [35.8245, 10.6346],
     period: 1,
     category: "events",
     description: "Islamic expansion into North Africa",
@@ -75,7 +79,7 @@ const historicalSites = [
   {
     id: 6,
     name: "Tunisian Independence",
-    coordinates: { x: 45, y: 35 },
+    coordinates: [36.8065, 10.1815],
     period: 2,
     category: "events",
     description: "Tunisia gains independence from France",
@@ -85,7 +89,7 @@ const historicalSites = [
   {
     id: 7,
     name: "Carthaginian Culture",
-    coordinates: { x: 40, y: 25 },
+    coordinates: [36.8526, 10.3284],
     period: 0,
     category: "culture",
     description: "Art, religion, and daily life in ancient Carthage",
@@ -95,7 +99,7 @@ const historicalSites = [
   {
     id: 8,
     name: "Islamic Golden Age",
-    coordinates: { x: 60, y: 50 },
+    coordinates: [35.6781, 10.1005],
     period: 1,
     category: "culture",
     description: "Advancements in science, art, and philosophy",
@@ -105,7 +109,7 @@ const historicalSites = [
   {
     id: 9,
     name: "Modern Tunisian Art",
-    coordinates: { x: 55, y: 30 },
+    coordinates: [36.8065, 10.1815],
     period: 2,
     category: "culture",
     description: "Contemporary art scene in Tunisia",
@@ -114,50 +118,55 @@ const historicalSites = [
   },
 ]
 
+
 export default function ExplorerPage() {
   const [selectedSite, setSelectedSite] = React.useState<(typeof historicalSites)[0] | null>(null)
   const [selectedPeriod, setSelectedPeriod] = React.useState(0)
   const [selectedCategory, setSelectedCategory] = React.useState("landmarks")
   const { t } = useLanguage()
 
-  const filteredSites = historicalSites.filter(
-    (site) => site.period === selectedPeriod && site.category === selectedCategory,
-  )
+  const filteredSites = React.useMemo(() => {
+    return historicalSites.filter((site) => site.period === selectedPeriod && site.category === selectedCategory)
+  }, [selectedPeriod, selectedCategory])
+
+
+  const handleSiteSelect = (site: (typeof historicalSites)[0]) => {
+    setSelectedSite(site)
+    setSelectedPeriod(site.period)
+    setSelectedCategory(site.category)
+  }
+
+  const handlePeriodChange = (periodId: number) => {
+    setSelectedPeriod(periodId)
+    setSelectedSite(null)
+  }
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category)
+    setSelectedSite(null)
+  }
 
   return (
     <div className="page-background">
       <div className="container py-8 px-4">
-        <h1 className="text-4xl font-bold text-white mb-8">{t("explorer.title")}</h1>
+        <h1 className="text-4xl text-center font-bold text-white mb-8">{t("explorer.title")}</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
             <div className="relative aspect-[4/3] bg-white rounded-lg overflow-hidden shadow-lg">
-              <Image src="/images/tunisia-map.jpg" alt="Map of Tunisia" layout="fill" objectFit="cover" />
-
-              {filteredSites.map((site) => (
-                <motion.button
-                  key={site.id}
-                  className="absolute"
-                  style={{
-                    left: `${site.coordinates.x}%`,
-                    top: `${site.coordinates.y}%`,
-                  }}
-                  whileHover={{ scale: 1.2 }}
-                  onClick={() => setSelectedSite(site)}
-                >
-                  <div className="relative">
-                    <MapPin className="h-8 w-8 text-primary drop-shadow-lg" />
-                    <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary rounded-full animate-ping" />
-                  </div>
-                </motion.button>
-              ))}
+            <MapComponent
+                sites={filteredSites}
+                onSiteSelect={handleSiteSelect}
+                selectedPeriod={selectedPeriod}
+                selectedCategory={selectedCategory}
+              />
             </div>
           </div>
 
           <div className="space-y-8">
-            <Timeline eras={historicalPeriods} onEraChange={(eraId) => setSelectedPeriod(eraId)} />
+            <Timeline eras={historicalPeriods} selectedEra={selectedPeriod} onEraChange={handlePeriodChange} />
 
-            <Tabs defaultValue="landmarks" onValueChange={setSelectedCategory}>
+            <Tabs value={selectedCategory} onValueChange={handleCategoryChange}>
               <TabsList className="grid w-full grid-cols-3">
                 {categories.map((category) => (
                   <TabsTrigger key={category.id} value={category.id}>
@@ -167,14 +176,17 @@ export default function ExplorerPage() {
               </TabsList>
             </Tabs>
 
+
+            
             {selectedSite && (
               <motion.div
+                key={selectedSite.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white/10 backdrop-blur-md p-6 rounded-lg shadow-lg"
               >
-                <h3 className="text-2xl font-bold text-white mb-2">{selectedSite.name}</h3>
-                <p className="text-gray-200 mb-4">{selectedSite.description}</p>
+                <h3 className="text-2xl font-bold text-white mb-2">{t(`explorer.siteName.${selectedSite.id}`)}</h3>
+                <p className="text-gray-200 mb-4">{t(`explorer.siteDescription.${selectedSite.id}`)}</p>
                 <div className="aspect-video relative mb-4">
                   <video
                     src={selectedSite.video}
@@ -194,6 +206,8 @@ export default function ExplorerPage() {
                 </Button>
               </motion.div>
             )}
+
+            
           </div>
         </div>
       </div>
