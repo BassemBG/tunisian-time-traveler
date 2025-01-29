@@ -115,12 +115,12 @@ body {
 }
 
 .animate-gradient-y {
-  animation: gradient-y 15s ease infinite;
+  animation: gradient-y 7s ease infinite;
   background-size: 200% 200%;
 }
 
 /* Apply consistent background to all pages */
 .page-background {
-  @apply min-h-screen bg-gradient-to-b from-black to-red-900;
+  @apply min-h-screen bg-gradient-to-b from-gray-950 to-red-800;
 }
 

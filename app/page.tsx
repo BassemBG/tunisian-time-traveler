@@ -38,8 +38,8 @@ export default function Home() {
     <div className="relative h-screen w-full overflow-hidden">
       {/* Morphing Gradient Background */}
       <div className="absolute inset-0 bg-black">
-        <div className="absolute inset-0 opacity-50 bg-gradient-to-r from-red-900 to-black animate-gradient-x"></div>
-        <div className="absolute inset-0 opacity-50 bg-gradient-to-b from-red-900 to-black animate-gradient-y"></div>
+        <div className="absolute inset-0 opacity-50 bg-gradient-to-r from-red-700 to-gray-950 animate-gradient-x"></div>
+        <div className="absolute inset-0 opacity-50 bg-gradient-to-b from-red-800 to-gray-950 animate-gradient-y"></div>
       </div>
 
       {/* Content */}

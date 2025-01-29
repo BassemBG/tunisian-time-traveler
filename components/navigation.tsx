@@ -47,7 +47,7 @@ export function Navigation() {
             alt="Tunisia Time Traveler"
             width={120}
             height={50}
-            className=""
+            className="dark:/logo-white.png"
           />
         </Link>
         <nav className="hidden md:flex items-center space-x-6">

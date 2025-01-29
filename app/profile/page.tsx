@@ -54,7 +54,7 @@ export default function ProfilePage() {
                 <span className="text-2xl font-bold text-primary">JD</span>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white">John Doe</h1>
+                <h1 className="text-2xl font-bold text-white">Bilel Jemni</h1>
                 <p className="text-gray-300">Premium Member</p>
               </div>
             </div>
